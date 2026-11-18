@@ -1,0 +1,33 @@
+require('dotenv').config()
+const express = require('express');
+const embalagemRoutes = require('./routes/embalagemRoutes');
+const maquinaRoutes = require('./routes/maquinaRoutes');
+const operadorRoutes = require('./routes/operadorRoutes');
+
+const app = express();
+
+app.use(express.json());
+app.use('/embalagem', embalagemRoutes);
+app.use('/maquina', maquinaRoutes);
+app.use('/operador', operadorRoutes);
+
+app.use((req, res) => {
+  res.status(404).json({ mensagem: 'Rota não encontrada.' });
+});
+
+app.use((error, req, res, next) => {
+  console.error('Erro não tratado na aplicação:', error);
+  const status = Number.isInteger(error.status) && error.status >= 400 && error.status < 500
+    ? error.status
+    : 500;
+  return res.status(status).json({ mensagem: status === 400 ? 'JSON inválido.' : 'Erro interno do servidor.' });
+});
+
+if (require.main === module) {
+  const porta = Number(process.env.PORT || 3001);
+  app.listen(porta, () => {
+    console.log(`API de Laboratório de embalagems rodando na porta ${porta}.`);
+  });
+}
+
+module.exports = app;

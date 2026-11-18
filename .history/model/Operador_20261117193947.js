@@ -1,0 +1,6 @@
+export class Operador {
+    constructor(id_operador, nome, matriculas, turno) {
+        this.id_operador = id_operador;
+        this
+    }
+}
